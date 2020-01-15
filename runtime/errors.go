@@ -106,11 +106,22 @@ func DefaultHTTPError(ctx context.Context, mux *ServeMux, marshaler Marshaler, w
 	}
 	w.Header().Set("Content-Type", contentType)
 
-	body := &errorBody{
-		Error:   s.Message(),
-		Message: s.Message(),
-		Code:    int32(s.Code()),
-		Details: s.Proto().GetDetails(),
+	//原代码
+	// body := &errorBody{
+	// 	Error:   s.Message(),
+	// 	Message: s.Message(),
+	// 	Code:    int32(s.Code()),
+	// 	Details: s.Proto().GetDetails(),
+	// }
+	//自定义报文格式
+	body := struct {
+		Code int32       `json:"code"`
+		Msg  string      `json:"msg"`
+		Data interface{} `json:"data"`
+	}{
+		20,
+		s.Message(),
+		"",
 	}
 
 	buf, merr := marshaler.Marshal(body)
